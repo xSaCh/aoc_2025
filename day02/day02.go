@@ -20,6 +20,40 @@ func part1(input io.Reader) int {
 	sc.Scan()
 	productIds := strings.Split(sc.Text(), ",")
 
+	sum := 0
+	seen := make(map[int]bool)
+
+	for _, p := range productIds {
+		idParts := strings.Split(p, "-")
+		firstId, _ := strconv.Atoi(idParts[0])
+		lastId, _ := strconv.Atoi(idParts[1])
+
+		for id := firstId; id <= lastId; id++ {
+			if seen[id] {
+				continue
+			}
+
+			strId := strconv.Itoa(id)
+			if len(strId)%2 != 0 {
+				continue
+			}
+
+			mid := len(strId) / 2
+			if strId[:mid] == strId[mid:] {
+				seen[id] = true
+				sum += id
+			}
+		}
+	}
+
+	return sum
+}
+
+func part2(input io.Reader) int {
+	sc := bufio.NewScanner(input)
+	sc.Scan()
+	productIds := strings.Split(sc.Text(), ",")
+
 	invalidIds := make(map[int]struct{}, 0)
 	for _, p := range productIds {
 		idParts := strings.Split(p, "-")
@@ -45,15 +79,6 @@ func part1(input io.Reader) int {
 		sum += id
 	}
 	return sum
-}
-
-func part2(input io.Reader) int {
-	sc := bufio.NewScanner(input)
-	for sc.Scan() {
-		_ = sc.Text()
-
-	}
-	return 0
 }
 
 func halfStringToInts(strA string) (int, int) {
