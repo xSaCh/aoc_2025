@@ -57,7 +57,7 @@ func part2(input io.Reader) int {
 
 		for id := firstId; id <= lastId; id++ {
 			strId := strconv.Itoa(id)
-			if repeatingDigits(strId) {
+			if hasRepeatingPattern(strId) {
 				sum += id
 			}
 		}
@@ -65,32 +65,19 @@ func part2(input io.Reader) int {
 	return sum
 }
 
-func repeatingDigits(str string) bool {
+func hasRepeatingPattern(str string) bool {
+outer:
 	for n := 1; n <= len(str)/2; n++ {
 		if len(str)%n != 0 {
 			continue
 		}
 		a := str[:n]
-		same := true
 		for i := n; i <= len(str)-n; i += n {
-			b := str[i : i+n]
-			if a != b {
-				same = false
-				break
+			if a != str[i:i+n] {
+				continue outer
 			}
 		}
-		if same {
-			return true
-		}
+		return true
 	}
 	return false
-}
-
-func halfStringToInts(strA string) (int, int) {
-	fHalf := strA[:len(strA)/2]
-	sHalf := strA[len(strA)/2:]
-	intfHalf, _ := strconv.Atoi(fHalf + fHalf)
-	intsHalf, _ := strconv.Atoi(sHalf + sHalf)
-
-	return intfHalf, intsHalf
 }

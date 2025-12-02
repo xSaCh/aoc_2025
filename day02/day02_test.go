@@ -1,6 +1,8 @@
 package main
 
 import (
+	"io"
+	"os"
 	"strings"
 	"testing"
 
@@ -34,7 +36,29 @@ func TestRepeatingDigits(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run("", func(t *testing.T) {
-			require.Equal(t, c.expected, repeatingDigits(c.input))
+			require.Equal(t, c.expected, hasRepeatingPattern(c.input))
 		})
+	}
+}
+
+func BenchmarkPart1(b *testing.B) {
+	f, _ := os.Open("./input.txt")
+	defer f.Close()
+	by, _ := io.ReadAll(f)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		rd := strings.NewReader(string(by))
+		part1(rd)
+	}
+}
+func BenchmarkPart2(b *testing.B) {
+	f, _ := os.Open("./input.txt")
+	defer f.Close()
+	by, _ := io.ReadAll(f)
+
+	for b.Loop() {
+		rd := strings.NewReader(string(by))
+		part2(rd)
 	}
 }
