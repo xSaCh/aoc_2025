@@ -19,3 +19,22 @@ func Test2(t *testing.T) {
 	result := part2(input)
 	require.Equal(t, 4174379265, result)
 }
+
+func TestRepeatingDigits(t *testing.T) {
+	cases := []struct {
+		input    string
+		expected bool
+	}{
+		{input: "1234", expected: false},
+		{input: "123321", expected: false},
+		{input: "123123", expected: true},
+		{input: "2121212118", expected: false},
+		{input: "2121212119", expected: false},
+		{input: "2121212121", expected: true},
+	}
+	for _, c := range cases {
+		t.Run("", func(t *testing.T) {
+			require.Equal(t, c.expected, repeatingDigits(c.input))
+		})
+	}
+}

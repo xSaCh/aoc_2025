@@ -12,7 +12,7 @@ import (
 func main() {
 	f, _ := os.Open("./input.txt")
 	defer f.Close()
-	fmt.Println(part1(f))
+	fmt.Println(part2(f))
 }
 
 func part1(input io.Reader) int {
@@ -21,7 +21,6 @@ func part1(input io.Reader) int {
 	productIds := strings.Split(sc.Text(), ",")
 
 	sum := 0
-	seen := make(map[int]bool)
 
 	for _, p := range productIds {
 		idParts := strings.Split(p, "-")
@@ -29,10 +28,6 @@ func part1(input io.Reader) int {
 		lastId, _ := strconv.Atoi(idParts[1])
 
 		for id := firstId; id <= lastId; id++ {
-			if seen[id] {
-				continue
-			}
-
 			strId := strconv.Itoa(id)
 			if len(strId)%2 != 0 {
 				continue
@@ -40,7 +35,6 @@ func part1(input io.Reader) int {
 
 			mid := len(strId) / 2
 			if strId[:mid] == strId[mid:] {
-				seen[id] = true
 				sum += id
 			}
 		}
@@ -54,7 +48,8 @@ func part2(input io.Reader) int {
 	sc.Scan()
 	productIds := strings.Split(sc.Text(), ",")
 
-	invalidIds := make(map[int]struct{}, 0)
+	sum := 0
+
 	for _, p := range productIds {
 		idParts := strings.Split(p, "-")
 		firstId, _ := strconv.Atoi(idParts[0])
@@ -62,23 +57,33 @@ func part2(input io.Reader) int {
 
 		for id := firstId; id <= lastId; id++ {
 			strId := strconv.Itoa(id)
-			if len(strId)%2 != 0 {
-				continue
-			}
-			fHalf := strId[:len(strId)/2]
-			sHalf := strId[len(strId)/2:]
-			if fHalf == sHalf {
-				invalidIds[id] = struct{}{}
+			if repeatingDigits(strId) {
+				sum += id
 			}
 		}
-
-	}
-	fmt.Printf("invalidIds: %v\n", invalidIds)
-	sum := 0
-	for id := range invalidIds {
-		sum += id
 	}
 	return sum
+}
+
+func repeatingDigits(str string) bool {
+	for n := 1; n <= len(str)/2; n++ {
+		if len(str)%n != 0 {
+			continue
+		}
+		a := str[:n]
+		same := true
+		for i := n; i <= len(str)-n; i += n {
+			b := str[i : i+n]
+			if a != b {
+				same = false
+				break
+			}
+		}
+		if same {
+			return true
+		}
+	}
+	return false
 }
 
 func halfStringToInts(strA string) (int, int) {
