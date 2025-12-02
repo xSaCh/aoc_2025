@@ -26,21 +26,18 @@ func part1(input io.Reader) int {
 		firstId, _ := strconv.Atoi(idParts[0])
 		lastId, _ := strconv.Atoi(idParts[1])
 
-		firstFHalf, firstLHalf := halfStringToInts(idParts[0])
-		lastFHalf, lastLHalf := halfStringToInts(idParts[1])
+		for id := firstId; id <= lastId; id++ {
+			strId := strconv.Itoa(id)
+			if len(strId)%2 != 0 {
+				continue
+			}
+			fHalf := strId[:len(strId)/2]
+			sHalf := strId[len(strId)/2:]
+			if fHalf == sHalf {
+				invalidIds[id] = struct{}{}
+			}
+		}
 
-		if firstFHalf >= firstId && firstFHalf <= lastId {
-			invalidIds[firstFHalf] = struct{}{}
-		}
-		if firstLHalf >= firstId && firstLHalf <= lastId {
-			invalidIds[firstLHalf] = struct{}{}
-		}
-		if lastFHalf >= firstId && lastFHalf <= lastId {
-			invalidIds[lastFHalf] = struct{}{}
-		}
-		if lastLHalf >= firstId && lastLHalf <= lastId {
-			invalidIds[lastLHalf] = struct{}{}
-		}
 	}
 	fmt.Printf("invalidIds: %v\n", invalidIds)
 	sum := 0
