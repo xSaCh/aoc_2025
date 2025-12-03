@@ -18,10 +18,11 @@ func Test1(t *testing.T) {
 }
 func Test2(t *testing.T) {
 	input := strings.NewReader(`987654321111111
-811111111111119
-234234234234278
-818181911112111`)
+	811111111111119
+	234234234234278
+	818181911112111`)
 
 	result := part2(input)
-	require.Equal(t, 0, result)
+
+	require.Equal(t, 3121910778619, int(result))
 }
