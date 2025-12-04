@@ -10,7 +10,7 @@ import (
 func main() {
 	f, _ := os.Open("./input.txt")
 	defer f.Close()
-	fmt.Println(part1(f))
+	fmt.Println(part2(f))
 }
 
 func part1(input io.Reader) int {
@@ -57,19 +57,29 @@ func part2(input io.Reader) int {
 		}
 		grid = append(grid, row)
 	}
-	// fmt.Printf("grid: %v\n", grid)
-	// fmt.Printf("getNumAdjustantNeigbours(grid, 2, 0): %v\n", getNumAdjustantNeigbours(grid, 2, 0))
 	count := 0
-	for r := range grid {
-		for c := range grid {
-			if grid[r][c] {
-				neighbours := getNumAdjustantNeigbours(grid, c, r)
-				if neighbours < 4 {
-					count++
-				}
+	for {
+		turnCount := 0
+		selected := [][2]int{}
+		for r := range grid {
+			for c := range grid {
+				if grid[r][c] {
+					neighbours := getNumAdjustantNeigbours(grid, c, r)
+					if neighbours < 4 {
+						selected = append(selected, [2]int{r, c})
+						turnCount++
+					}
 
+				}
 			}
 		}
+		if turnCount == 0 {
+			break
+		}
+		for _, s := range selected {
+			grid[s[0]][s[1]] = false
+		}
+		count += turnCount
 	}
 
 	return count
@@ -83,7 +93,6 @@ func getNumAdjustantNeigbours(grid [][]bool, x, y int) int {
 			if y+r >= n || x+c >= n || (r == c && r == 0) || y+r < 0 || x+c < 0 {
 				continue
 			}
-			// _, isSelected := selected[[2]int{y + r, x + c}]
 			if grid[y+r][x+c] {
 				num++
 			}
