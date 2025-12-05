@@ -24,8 +24,18 @@ func Test1(t *testing.T) {
 	require.Equal(t, 3, result)
 }
 func Test2(t *testing.T) {
-	input := strings.NewReader(``)
+	input := strings.NewReader(`3-5
+10-14
+16-20
+12-18
+
+1
+5
+8
+11
+17
+32`)
 
 	result := part2(input)
-	require.Equal(t, 0, result)
+	require.Equal(t, 14, result)
 }
