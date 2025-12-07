@@ -11,7 +11,7 @@ import (
 func main() {
 	f, _ := os.Open("./input.txt")
 	defer f.Close()
-	fmt.Println(part1(f))
+	fmt.Println(part2(f))
 }
 
 type Pos struct {
@@ -51,12 +51,8 @@ func part1(input io.Reader) int {
 		}
 
 		if grid[b.Y][b.X] {
-			if !slices.Contains(beams, Pos{b.X - 1, b.Y}) {
-				beams = append(beams, Pos{b.X - 1, b.Y})
-			}
-			if !slices.Contains(beams, Pos{b.X + 1, b.Y}) {
-				beams = append(beams, Pos{b.X + 1, b.Y})
-			}
+			beams = append(beams, Pos{b.X - 1, b.Y})
+			beams = append(beams, Pos{b.X + 1, b.Y})
 			cnt += 1
 		} else {
 			if !slices.Contains(beams, b) {
@@ -69,9 +65,37 @@ func part1(input io.Reader) int {
 
 func part2(input io.Reader) int {
 	sc := bufio.NewScanner(input)
+	grid := [][]bool{}
+	startPos := Pos{}
 	for sc.Scan() {
-		_ = sc.Text()
-
+		line := sc.Text()
+		row := make([]bool, len(line))
+		for i, l := range line {
+			if l == '^' {
+				row[i] = true
+			}
+			if l == 'S' {
+				startPos = Pos{i, len(grid)}
+			}
+		}
+		grid = append(grid, row)
 	}
-	return 0
+	// fmt.Printf("startPos: %v\n", startPos)
+
+	collionsList := make([]int, len(grid))
+	collionsList[startPos.X] = 1
+	for r := range grid {
+		for c := range grid[r] {
+			if grid[r][c] {
+				collionsList[c-1] += collionsList[c]
+				collionsList[c+1] += collionsList[c]
+				collionsList[c] = 0
+			}
+		}
+	}
+	count := 0
+	for _, c := range collionsList {
+		count += c
+	}
+	return count
 }

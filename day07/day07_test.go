@@ -47,5 +47,5 @@ func Test2(t *testing.T) {
 ...............`)
 
 	result := part2(input)
-	require.Equal(t, 0, result)
+	require.Equal(t, 40, result)
 }
